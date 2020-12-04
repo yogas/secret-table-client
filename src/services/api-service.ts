@@ -2,13 +2,19 @@ interface HttpResponse<T> extends Response {
     parsedBody?: T
 }
 
+interface IFetchOptions {
+    headers?: any,
+    method?: string,
+    body?: string
+}
+
 export default class ApiService {
     private serverURL = 'http://localhost';
     private apiBase = `${this.serverURL}:3001/api`;
     public socketURL = `${this.serverURL}:3002`;
 
     public async http<T>(method: string, url: string, body: Object={}): Promise<HttpResponse<T>> {
-        let options = {
+        let options: IFetchOptions = {
             headers: {
                 'Content-Type': 'application/json',
                 'x-auth-token': window.localStorage.getItem('jwt') || ''
@@ -17,11 +23,9 @@ export default class ApiService {
         };
         
         if(method === 'post') {
-            // @ts-ignore
             options = {...options, body: JSON.stringify(body)};
             console.log(options);
-        }
-        
+        }        
         
         const res: HttpResponse<T> = await fetch(url, options);
         res.parsedBody = await res.json();
