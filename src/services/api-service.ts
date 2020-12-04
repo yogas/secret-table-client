@@ -3,7 +3,7 @@ interface HttpResponse<T> extends Response {
 }
 
 export default class ApiService {
-    private serverURL = 'http://192.168.1.102';
+    private serverURL = 'http://localhost';
     private apiBase = `${this.serverURL}:3001/api`;
     public socketURL = `${this.serverURL}:3002`;
 
