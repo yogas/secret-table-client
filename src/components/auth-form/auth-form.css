@@ -1,0 +1,14 @@
+.auth-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.auth-form__bottom {
+    margin-bottom: 1rem;
+    text-align: right;
+}
+
+.auth-form__submit-btn {
+    width: 100%;
+    margin: 0 auto;
+}
