@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useState, useEffect, useRef, useContext} from 'react';
+import React, {FC, useCallback, useContext, useEffect, useRef, useState} from 'react';
 import socketIOClient from 'socket.io-client';
 import UserContext from "../user-context";
 import idxToLetter from "../../utils/idx-to-letter";
@@ -111,10 +111,9 @@ const Table: FC<ITable> = ({id}) => {
 
     const addRow = useCallback(() => {
         setTable( (prev: any[]) => {
-            const newTable = [...prev, prev[0].map( (item: any) => {
+            return [...prev, prev[0].map(() => {
                 return {text: ''}
             })];
-            return newTable;
         })
     }, [setTable]);
 
@@ -136,8 +135,10 @@ const Table: FC<ITable> = ({id}) => {
     }, [user.id, changeTableCell]);
 
     const onFocusBySocket = useCallback((data: ICell) => {
-        // TODO on focus by socket...
-    }, []);
+        if(user.id !== data.agent_id) {
+            // TODO on focus by socket
+        }
+    }, [user.id]);
 
     const onBlurBySocket = useCallback((data: ICell) => {
         const {row, column, agent_id, agent} = data;
@@ -176,7 +177,7 @@ const Table: FC<ITable> = ({id}) => {
         api.getTable(id!)
             .then( data => {
                 if(data.ok) {
-                    setTable(prev => data.parsedBody.result.content);
+                    setTable(() => data.parsedBody.result.content);
                     setName(data.parsedBody.result.name);
                     setLoading(false);
                     
@@ -188,7 +189,7 @@ const Table: FC<ITable> = ({id}) => {
     }, [id]);
     
     // After input text in table cell
-    const onInputHandler = useCallback((text: string, row: number, column: number, set: boolean=false) => {
+    const onInputHandler = useCallback((text: string, row: number, column: number) => {
         sendChange({text, row, column, agent_id: user.id, agent: user.name});
         setTable( prev => {
             const newTable = [...prev];
@@ -254,7 +255,7 @@ const Table: FC<ITable> = ({id}) => {
             <table className="table">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th>&nbsp;</th>
                         {
                             table[0].map( (column, idx) => {
                                 return <th key={idx}>{idxToLetter(idx)}</th>
@@ -287,7 +288,7 @@ const Table: FC<ITable> = ({id}) => {
                                             )
                                         })
                                     }
-                                    <td></td>
+                                    <td>&nbsp;</td>
                                 </tr>
                             )
                         })
@@ -299,7 +300,7 @@ const Table: FC<ITable> = ({id}) => {
                                 return <td key={idx}>{value}</td>
                             } )
                         }
-                        <td></td>
+                        <td>&nbsp;</td>
                     </tr>
                 </tbody>
             </table>
